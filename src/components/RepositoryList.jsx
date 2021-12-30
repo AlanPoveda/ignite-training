@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { RepositoryItem } from './RepositoryItem';
 
 
@@ -9,35 +9,39 @@ import { RepositoryItem } from './RepositoryItem';
 import '../styles/repositories.scss'
 
 //Um objeto com várias informaçõesß
-
-const repository = {
+/**
+ * Um objeto estático preenchendo as informações do componente criado
+ * const repository = {
     name: "uunform",
     description: "Forms in React",
     link: "google.com"
 }
+ */
+
 
 
 export function RepositoryList(){
     //Listagem do repositórios
     const [ repositories, setRepositories ] = useState([])
 
-    //Fazendo uma chamda teste
-    useState(()=>{
+    //Fazendo uma chamada na api do gitHub com os repositories
+    useEffect(()=>{
         fetch('https://api.github.com/users/AlanPoveda/repos')
         .then( response => response.json())
-        .then( data =>console.log(data))
-    },[])
+        .then( data => setRepositories(data))
+    },[]);
 
-
+    
     return(
         <section className="respository-list">
-            <h1>Lista de respositorios</h1>
+            <h1>Lista de respositories</h1>
 
             <ul>
-                <RepositoryItem repository={repository} />
-                <RepositoryItem repository={repository}/>
-                <RepositoryItem repository={repository}/>
-                <RepositoryItem repository={repository}/>
+                {repositories.map( repo => {
+                    //teve que por a key pois da erro. Assim soluciona o problema
+                    return <RepositoryItem key={repo.name} repository={repo} /> 
+                })}
+                
             </ul>
 
         </section>
